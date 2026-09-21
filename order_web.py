@@ -14,13 +14,10 @@ st.caption("数据分析全流程：数据生成 → 数据清洗 → 多维统�
 @st.cache_data
 def create_data():
     np.random.seed(2026)
-    # 全年连续日期生成
     date_range = pd.date_range(start="2025-01-01", end="2025-12-31", freq="D")
-
     region_list = ["华东", "华南", "华北", "西南", "华中", "东北", "西北"]
     product_list = ["手机", "笔记本电脑", "蓝牙耳机", "平板", "智能手表", "智能音箱", "游戏手柄"]
     channel_list = ["官网", "天猫", "京东", "抖音", "拼多多"]
-
     total_count = 1500
     df = pd.DataFrame({
         "订单号": [f"OD{str(i).zfill(6)}" for i in range(1, total_count+1)],
@@ -32,8 +29,6 @@ def create_data():
         "产品单价": np.random.randint(99, 8999, total_count),
         "用户ID": [f"USER{str(np.random.randint(1000,5000))}" for _ in range(total_count)]
     })
-
-    # 人工制造脏数据（用于清洗实验）
     df.loc[10, "下单日期"] = np.nan
     df.loc[30, "销售地区"] = np.nan
     df.loc[60, "产品单价"] = np.nan
@@ -41,9 +36,7 @@ def create_data():
     df.loc[180] = df.loc[50]
     df.loc[260] = df.loc[88]
     df.loc[350] = df.loc[120]
-
     return df
-
 #完整数据清洗模块（dropna / drop_duplicates） 
     df = df_raw.copy()
     log_list = []

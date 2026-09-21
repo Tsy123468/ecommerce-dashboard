@@ -5,16 +5,16 @@ import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-# ===================== 页面全局配置 =====================
+# 页面全局配置
 st.set_page_config(page_title="高端电商数据分析仪表盘", layout="wide")
 st.title("📊 高端电商订单综合数据分析仪表盘")
 st.caption("数据分析全流程：数据生成 → 数据清洗 → 多维统计 → 可视化挖掘 → 用户分层 → 异常检测")
 
-# ===================== 1. 生成高质量模拟数据（pd.date_range） =====================
+# 生成高质量模拟数据（pd.date_range
 @st.cache_data
 def create_data():
     np.random.seed(2026)
-    # 全年连续日期生成（作业核心考点）
+    # 全年连续日期生成
     date_range = pd.date_range(start="2025-01-01", end="2025-12-31", freq="D")
 
     region_list = ["华东", "华南", "华北", "西南", "华中", "东北", "西北"]
@@ -44,8 +44,7 @@ def create_data():
 
     return df
 
-# ===================== 2. 完整数据清洗模块（dropna / drop_duplicates） =====================
-def clean_data(df_raw):
+#完整数据清洗模块（dropna / drop_duplicates） 
     df = df_raw.copy()
     log_list = []
     log_list.append(f"原始数据总量：{len(df)} 行")
@@ -78,7 +77,7 @@ def clean_data(df_raw):
 
     return df, log_list
 
-# ===================== 3. 多维分组统计 groupby =====================
+#  3. 多维分组统计 groupby 
 def group_statistics(df):
     # 地区统计
     area_group = df.groupby("销售地区").agg(
@@ -121,7 +120,7 @@ def group_statistics(df):
 
     return area_group, product_group, channel_group, month_group, quarter_group, cross_group
 
-# ===================== 4. 透视表分析 pivot_table =====================
+# 透视表分析 pivot_table 
 def pivot_analysis(df, threshold):
     high_sale_df = df[df["销售数量"] >= threshold]
 
@@ -145,7 +144,7 @@ def pivot_analysis(df, threshold):
 
     return high_sale_df, pivot_sale, pivot_num
 
-# ===================== 5. 表合并 merge =====================
+# 5. 表合并 merge 
 def merge_table(df, cross_data):
     merge_result = pd.merge(
         df,
@@ -156,7 +155,7 @@ def merge_table(df, cross_data):
     )
     return merge_result
 
-# ===================== 6. RFM 用户价值分析 =====================
+#  RFM 用户价值分析
 def rfm_analyse(df):
     latest = df["下单日期"].max()
     rfm = df.groupby("用户ID").agg(
@@ -172,14 +171,14 @@ def rfm_analyse(df):
     )
     return rfm.sort_values("累计消费", ascending=False)
 
-# ===================== 7. 异常数据检测 =====================
+#  异常数据检测 
 def error_detect(df):
     high_price = df[df["产品单价"] >= df["产品单价"].quantile(0.95)]
     high_sale = df[df["销售数量"] >= df["销售数量"].quantile(0.95)]
     top_order = df.sort_values("订单总金额", ascending=False).head(30)
     return high_price, high_sale, top_order
 
-# ===================== 加载与处理数据 =====================
+# 加载与处理数据
 df_raw = create_data()
 df_clean, clean_log = clean_data(df_raw)
 area_df, pro_df, ch_df, mon_df, qt_df, cross_df = group_statistics(df_clean)
@@ -202,7 +201,7 @@ merge_all = merge_table(df_filter, cross_df)
 rfm_df = rfm_analyse(df_filter)
 err_price_df, err_num_df, top_order_df = error_detect(df_filter)
 
-# ===================== 核心指标（表格版，彻底无省略号） =====================
+#  核心指标 
 st.subheader("📌 核心经营指标总览")
 kpi_all = pd.DataFrame({
     "指标":["总订单量","总销量","总销售额","平均客单价","活跃用户数","日均销售额"],
@@ -218,7 +217,7 @@ kpi_all = pd.DataFrame({
 st.dataframe(kpi_all.T, use_container_width=True, hide_index=True)
 st.divider()
 
-# ===================== 七大标签页 =====================
+# 七大标签页 
 tab1,tab2,tab3,tab4,tab5,tab6,tab7 = st.tabs([
     "数据清洗与质量报告",
     "时间趋势分析",
